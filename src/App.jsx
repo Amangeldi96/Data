@@ -61,7 +61,7 @@ function App() {
   return (
     <div className="container">
       <div className="header">
-        <h2 style={{ textAlign: 'center', marginBottom: '10px', color: '#fff' }}>ЭНИ Издөө</h2>
+        <h2 style={{ textAlign: 'center', marginBottom: '10px'}}>ЭНИ Издөө</h2>
         <div className="search-wrapper">
           <input 
             className="search-input"
