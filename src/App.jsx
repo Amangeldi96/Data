@@ -1,50 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { myRawData } from './data'; // src/data.js файлында export болушу керек
+import { myRawData } from './data'; 
 import './App.css';
 
 function App() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
 
-  // Биринчи жолу ачылганда 15 сапты көрсөтүү
   useEffect(() => {
     if (myRawData && Array.isArray(myRawData)) {
       setResults(myRawData.slice(0, 15));
     }
 
-    // PWA (Оффлайн режим) үчүн Service Worker каттоо
+    // Service Worker каттоо (Жолун '/sw.js' деп так жазуу керек)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW катасы:', err));
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('SW катталды!', reg.scope))
+          .catch(err => console.log('SW катасы:', err));
       });
     }
   }, []);
 
-  // Издөө функциясы (Акыркы 4 цифраны жана текстти табуу)
   const handleSearch = (e) => {
     const val = e.target.value;
     setQuery(val);
     
-    // Эгер издөө бош болсо, баштапкы 15 сапты кайтаруу
     if (!val.trim()) {
       setResults(myRawData.slice(0, 15));
       return;
     }
 
-    // Издөө текстин тазалоо (кичинекей тамга, боштуктарды жана белгилерди алуу)
     const cleanQuery = val.toLowerCase().trim().replace(/[^a-z0-9а-я]/g, '');
 
     const filtered = myRawData.filter(item => {
       return Object.values(item).some(v => {
         if (!v) return false;
-        
-        // Базадагы маанини текстке айлантып тазалоо
         const stringValue = String(v).toLowerCase().replace(/[^a-z0-9а-я]/g, '');
         
-        // 1. Жөнөкөй издөө (тексттин каалаган жеринде камтылса)
         const isMatch = stringValue.includes(cleanQuery);
         
-        // 2. АКЫРКЫ 4 ЦИФРА: Эгер колдонуучу так 4 цифра жазса, коддун аягын текшерүү
         let isLastFourMatch = false;
         if (cleanQuery.length === 4 && !isNaN(cleanQuery)) {
           isLastFourMatch = stringValue.endsWith(cleanQuery);
@@ -54,18 +48,17 @@ function App() {
       });
     });
 
-    // Натыйжаны 100 сапка чейин чектөө (телефондо ылдам иштеши үчүн)
     setResults(filtered.slice(0, 100));
   };
 
   return (
     <div className="container">
       <div className="header">
-        <h2 style={{ textAlign: 'center', marginBottom: '10px'}}>ЭНИ Издөө</h2>
+        <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>ЭНИ Издөө</h2>
         <div className="search-wrapper">
           <input 
             className="search-input"
-            placeholder="Код (акыркы 4 сан) же ФИО..." 
+            placeholder="Код же ФИО жазыңыз..." 
             value={query} 
             onChange={handleSearch} 
           />
