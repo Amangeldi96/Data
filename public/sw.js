@@ -2,11 +2,7 @@
 const CACHE_NAME = 'eni-search-v1';
 const urlsToCache = [
   '/',
-  '/index.html',
-  '/src/main.jsx',
-  '/src/App.jsx',
-  '/src/App.css',
-  '/src/data.js'
+  '/index.html'
 ];
 
 // Каштоону орнотуу
